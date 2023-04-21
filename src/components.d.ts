@@ -7,6 +7,7 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    CardContainer: typeof import('./components/Card/CardContainer.vue')['default']
     ElAffix: typeof import('element-plus/es')['ElAffix']
     ElAside: typeof import('element-plus/es')['ElAside']
     ElButton: typeof import('element-plus/es')['ElButton']
