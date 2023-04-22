@@ -36,6 +36,7 @@ type IProps = {
     }
   }
   .card-body {
+    margin-top: 8px;
     flex: 1;
   }
 }
