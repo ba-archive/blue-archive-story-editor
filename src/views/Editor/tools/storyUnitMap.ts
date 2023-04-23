@@ -1,5 +1,5 @@
 import { defineAsyncComponent } from "vue";
-import { StoryUnitType } from "@/views/Editor/tools/types";
+import { InternalTitleStoryUnit, StoryRawUnit, StoryUnitType } from "@/views/Editor/tools/types";
 
 type IStoryUnitComponentMap = {
   [key in StoryUnitType]: {
@@ -11,7 +11,7 @@ type IStoryUnitComponentMap = {
   };
 };
 
-const StoryUnitComponentMap: IStoryUnitComponentMap = {
+export const StoryUnitComponentMap: IStoryUnitComponentMap = {
   title: {
     component: defineAsyncComponent(() => import("../StoryItems/TitleUnit.vue")),
     type: "title",
@@ -70,4 +70,77 @@ const StoryUnitComponentMap: IStoryUnitComponentMap = {
   },
 };
 
-export default StoryUnitComponentMap;
+type StoryRawUnitOmitType = Omit<StoryRawUnit, "type">;
+
+type IStoryRawUnitGenerator = {
+  [type in StoryUnitType]: Partial<{
+    [key in keyof StoryRawUnitOmitType]: (...args: never[]) => StoryRawUnitOmitType[key];
+  }>;
+};
+
+type TitleStoryRawUnitGeneratorFn<T> = (title: string, subTitle?: string) => T;
+
+type IInternalStoryUnitGenerator = {
+  [key in StoryUnitType]: key extends "title"
+    ? TitleStoryRawUnitGeneratorFn<InternalTitleStoryUnit>
+    : key extends "place"
+    ? (text: string) => string
+    : never;
+};
+
+interface StoryRawUnitGenerator extends IStoryRawUnitGenerator {
+  title: {
+    ScriptKr: TitleStoryRawUnitGeneratorFn<string>;
+    TextCn: TitleStoryRawUnitGeneratorFn<string>;
+  };
+}
+
+export const StoryRawUnitGeneratorMap: StoryRawUnitGenerator = {
+  title: {
+    ScriptKr(title: string, subTitle?: string) {
+      return `#title;${this.TextCn(title, subTitle)}`;
+    },
+    TextCn(title: string, subTitle?: string): string {
+      const base = `${title}`;
+      if (subTitle) {
+        return `${base};${subTitle}`;
+      }
+      return base;
+    },
+  },
+  // @ts-ignore
+  place: undefined,
+  // @ts-ignore
+  text: undefined,
+  // @ts-ignore
+  option: undefined,
+  // @ts-ignore
+  st: undefined,
+  // @ts-ignore
+  effectOnly: undefined,
+  // @ts-ignore
+  continue: undefined,
+  // @ts-ignore
+  nextEpisode: undefined,
+};
+
+export const InternalStoryUnitGenerator: IInternalStoryUnitGenerator = {
+  // @ts-ignore
+  continue: undefined,
+  // @ts-ignore
+  effectOnly: undefined,
+  // @ts-ignore
+  nextEpisode: undefined,
+  // @ts-ignore
+  option: undefined,
+  place(text: string): string {
+    return text;
+  },
+  // @ts-ignore
+  st: undefined,
+  // @ts-ignore
+  text: undefined,
+  title(title: string, subTitle?: string) {
+    return { type: "title", title, subTitle };
+  },
+};

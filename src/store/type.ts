@@ -1,9 +1,9 @@
 import { NetworkAdapterType } from "@/interface/http";
 
-export interface BaseStoreState {
+export type BaseStoreState = {
   adapter: NetworkAdapterType;
   theme: {
     themeType: string;
     themeColor: string | number;
   };
-}
+};

@@ -9,7 +9,7 @@
             :height="playerContainerHeight - 24"
             :change-index="targetIndex"
             :story-summary="{ chapterName: '', summary: '' }"
-            language="cn"
+            language="Cn"
             data-url="https://yuuka.cdn.diyigemt.com/image/ba-all-data"
           />
         </div>
@@ -22,11 +22,17 @@
       <CardContainer title="剧情脚本" class="flex-1 h-full">
         <div class="h-full flex flex-col">
           <el-row class="mb-8px">
-            <el-button type="primary" class="w-full">新增</el-button>
+            <el-button type="primary" class="w-full" @click="createStoryUnit">新增</el-button>
           </el-row>
           <el-row class="flex-1">
             <el-scrollbar>
-              <StoryUnit v-for="(e, index) in storyList" :key="index" :type="e" :index="Number(index)" />
+              <StoryUnit
+                v-for="(e, index) in story"
+                :key="index"
+                class="mb-8px"
+                :type="e.type"
+                :index="Number(index)"
+              />
             </el-scrollbar>
           </el-row>
         </div>
@@ -40,25 +46,25 @@
 
 <script setup lang="ts">
 import StoryPlayer from "ba-story-player";
-import { StoryUnit as PlayerStoryUnit, StoryType as PlayerStoryUnitType } from "ba-story-player/dist/types/common";
+import { StoryType } from "ba-story-player/dist/types/common";
 import "ba-story-player/dist/style.css";
 import StoryUnit from "@/views/Editor/StoryUnit.vue";
 import CreateStoryUnitDialog from "@/views/Editor/CreateStoryUnitDialog.vue";
+import useStoryStore from "@/views/Editor/tools/store";
+import { buildDefaultStoryRawUnit } from "@/views/Editor/tools";
 
 const StoryPlayerContainerEl = ref<HTMLElement>();
-
+const storyStore = useStoryStore();
 const { width: playerContainerWidth, height: playerContainerHeight } = useElementSize(StoryPlayerContainerEl);
-// @ts-ignore
-const story = ref<PlayerStoryUnit[]>([{}]);
-const storyList = ref<PlayerStoryUnitType[]>([]);
+const story = computed(() => storyStore.story);
 const targetIndex = ref(0);
-const createDialogVisible = ref(true);
+const createDialogVisible = ref(false);
 
 function createStoryUnit() {
   createDialogVisible.value = true;
 }
-function onConfirmStoryUnitType(type: PlayerStoryUnitType) {
-  storyList.value.push(type);
+function onConfirmStoryUnitType(type: StoryType) {
+  storyStore.insertStoryUnit(buildDefaultStoryRawUnit({ type }));
   createDialogVisible.value = false;
 }
 </script>

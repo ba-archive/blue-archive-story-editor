@@ -16,14 +16,14 @@
 </template>
 
 <script setup lang="ts">
-import { StoryType as PlayerStoryType } from "ba-story-player/dist/types/common";
-import StoryUnitComponentMap from "./tools/storyUnitMap";
+import { StoryType } from "ba-story-player/dist/types/common";
+import { StoryUnitComponentMap } from "./tools/storyUnitMap";
 
 const emit = defineEmits<{
-  (e: "choose", type: PlayerStoryType): void;
+  (e: "choose", type: StoryType): void;
 }>();
 
-function onSelected(type: PlayerStoryType) {
+function onSelected(type: StoryType) {
   emit("choose", type);
 }
 </script>
