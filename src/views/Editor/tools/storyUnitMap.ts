@@ -72,6 +72,68 @@ export const StoryUnitComponentMap: IStoryUnitComponentMap = {
 
 type StoryRawUnitOmitType = Omit<StoryRawUnit, "type">;
 
+type BaseGeneralFunction = {
+  [type in StoryUnitType]: (...args: never[]) => BaseInternalStoryUnit<type, unknown>;
+};
+
+type BaseInternalStoryUnit<Key extends StoryUnitType, Other> = {
+  type: Key;
+} & Other;
+
+interface ActualGeneralFunction extends BaseGeneralFunction {
+  title: (
+    title: string,
+    sub?: string,
+  ) => {
+    type: "title";
+    title: string;
+    subTitle: string;
+  };
+}
+
+type BaseGeneralFunctionIncludeList = {
+  [key in StoryUnitType]: (keyof StoryRawUnitOmitType)[];
+};
+
+interface ActualGeneralFunctionIncludeList extends BaseGeneralFunctionIncludeList {
+  title: ["ScriptKr", "TextCn"];
+}
+
+type BuildFunctionFromType<type extends StoryUnitType, key extends keyof StoryRawUnitOmitType> = (
+  ...args: Parameters<ActualGeneralFunction[type]>
+) => StoryRawUnitOmitType[key];
+
+type IStoryUnitGenerator = {
+  [type in StoryUnitType]: {
+    raw: Partial<{
+      [key in ActualGeneralFunctionIncludeList[type]]: (
+        ...args: Parameters<ActualGeneralFunction[type]>
+      ) => StoryRawUnitOmitType[key];
+    }>;
+    internal: ActualGeneralFunction[type];
+  };
+};
+
+const StoryUnitGenerator: IStoryUnitGenerator = {
+  title: {
+    raw: {
+      ScriptKr(title: string, subTitle?: string) {
+        return `#title;${this.TextCn(title, subTitle)}`;
+      },
+      TextCn(title: string, subTitle?: string): string {
+        const base = `${title}`;
+        if (subTitle) {
+          return `${base};${subTitle}`;
+        }
+        return base;
+      },
+    },
+    internal(title: string) {
+      return "";
+    },
+  },
+};
+
 type IStoryRawUnitGenerator = {
   [type in StoryUnitType]: Partial<{
     [key in keyof StoryRawUnitOmitType]: (...args: never[]) => StoryRawUnitOmitType[key];

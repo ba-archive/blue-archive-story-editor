@@ -1,5 +1,6 @@
 import useStoryStore from "@/views/Editor/tools/store";
 import { InternalStoryUnit, StoryRawUnit, StoryUnitType } from "@/views/Editor/tools/types";
+import { StoryRawUnitGeneratorMap } from "@/views/Editor/tools/storyUnitMap";
 
 export function buildDefaultStoryRawUnit(
   override: Partial<Omit<StoryRawUnit, "type">> & Required<Pick<StoryRawUnit, "type">>,
@@ -25,7 +26,8 @@ export function deleteStoryUnit(index: number) {
   store.deleteStoryUnit(index);
 }
 
-export function inspectFormData(
+export function inspectFormData<K extends StoryUnitType>(
+  kk: typeof StoryRawUnitGeneratorMap[K],
   deps: Parameters<typeof watch>[0],
   storyBuilder: () => PromiseLike<StoryRawUnit>,
   internalStoryBuilder: () => PromiseLike<InternalStoryUnit>,
