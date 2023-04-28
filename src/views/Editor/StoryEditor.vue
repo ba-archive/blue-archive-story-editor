@@ -16,6 +16,8 @@
       </CardContainer>
       <CardContainer title="资源列表" class="flex-1">
         <h1>这是资源列表</h1>
+        <el-button type="danger" @click="clear">清空缓存</el-button>
+        <el-button type="primary" @click="flash">刷新</el-button>
       </CardContainer>
     </el-col>
     <el-col :span="12" class="flex-1 h-full">
@@ -26,13 +28,15 @@
           </el-row>
           <el-row class="flex-1">
             <el-scrollbar class="w-full">
-              <StoryUnit
-                v-for="(e, index) in story"
-                :key="index"
-                class="mb-16px"
-                :type="e.type"
-                :index="Number(index)"
-              />
+              <VueDraggable v-model="story" :animation="150" handle=".drag-handle" @update="update">
+                <StoryUnit
+                  v-for="(e, index) in story"
+                  :key="index"
+                  class="mb-16px"
+                  :type="e.type"
+                  :index="Number(index)"
+                />
+              </VueDraggable>
             </el-scrollbar>
           </el-row>
         </div>
@@ -48,11 +52,12 @@
 import StoryPlayer from "ba-story-player";
 import { StoryType } from "ba-story-player/dist/types/common";
 import "ba-story-player/dist/style.css";
-import StoryUnit from "@/views/Editor/StoryUnit.vue";
+import { VueDraggable } from "vue-draggable-plus";
+import { SortableEvent } from "sortablejs";
 import CreateStoryUnitDialog from "@/views/Editor/CreateStoryUnitDialog.vue";
 import useStoryStore from "@/views/Editor/tools/store";
 import { buildDefaultStoryRawUnit } from "@/views/Editor/tools";
-import StoryApi from "@/views/Editor/tools/api";
+import StoryUnit from "@/views/Editor/StoryUnit.vue";
 
 const StoryPlayerContainerEl = ref<HTMLElement>();
 const storyStore = useStoryStore();
@@ -67,6 +72,19 @@ function createStoryUnit() {
 function onConfirmStoryUnitType(type: StoryType) {
   storyStore.insertStoryUnit(buildDefaultStoryRawUnit({ type }));
   createDialogVisible.value = false;
+}
+
+function update(event: SortableEvent) {
+  storyStore.updateInternalIndex(event.newIndex!, event.oldIndex!);
+}
+
+function clear() {
+  storyStore.clearCache();
+}
+
+function flash() {
+  const tmp = window.location.href;
+  window.location.href = tmp;
 }
 </script>
 

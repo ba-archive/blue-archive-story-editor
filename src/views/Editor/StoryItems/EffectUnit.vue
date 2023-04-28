@@ -12,6 +12,7 @@
 </template>
 
 <script setup lang="ts">
+import { Ref } from "vue";
 import {
   EffectUnitComponentList,
   EffectUnitComponentMap,
@@ -21,8 +22,8 @@ import { inspectFormData } from "@/views/Editor/tools";
 import { EffectOnlyConfig, InternalEffectStoryUnit } from "@/views/Editor/tools/types";
 
 const index = inject("index", ref(-1));
-const storyUnit = inject<InternalEffectStoryUnit>("storyUnit") || { type: "effectOnly", background: 0 };
-const config = ref<EffectOnlyConfig>(storyUnit);
+const storyUnit = inject<Ref<InternalEffectStoryUnit>>("storyUnit")!;
+const config = ref<EffectOnlyConfig>(storyUnit.value);
 
 provide("config", config);
 

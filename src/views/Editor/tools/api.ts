@@ -1,4 +1,4 @@
-import { BGNameExcelTableItem } from "ba-story-player/dist/types/excels";
+import { BGNameExcelTableItem, CharacterNameExcelTableItem } from "ba-story-player/dist/types/excels";
 import service from "@/api/http";
 
 const StoryApi = {
@@ -10,6 +10,15 @@ const StoryApi = {
         .forEach((it) => {
           map.set(it.Name, it);
         });
+      return map;
+    });
+  },
+  fetchCharacterNameExcelTable() {
+    return service.excel("character").then((data) => {
+      const map = new Map<number, CharacterNameExcelTableItem>();
+      data.DataList.forEach((it) => {
+        map.set(it.CharacterName, it);
+      });
       return map;
     });
   },

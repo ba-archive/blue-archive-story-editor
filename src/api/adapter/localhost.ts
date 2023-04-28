@@ -5,7 +5,7 @@ import { HTTP_OK } from "@/constant";
 import { errorMessage, infoMessage, warningMessage } from "@/utils/message";
 import showCodeMessage from "@/api/code";
 import { formatJsonToUrlParams, instanceObject } from "@/utils/format";
-import { ActualBaseExcelTable, ExcelTableNameMap, ExcelTableType } from "@/types";
+import { ActualBaseExcelTable, ExcelTable, ExcelTableNameMap, ExcelTableType } from "@/types";
 
 const BASE_PREFIX = import.meta.env.VITE_API_BASEURL;
 
@@ -23,6 +23,7 @@ const axiosInstance: AxiosInstance = axios.create({
 
 // 请求拦截器
 axiosInstance.interceptors.request.use(
+  // @ts-ignore
   (config: IRequestConfig) => {
     config.showServerResponseError = config.showServerResponseError || true;
     return config;
@@ -41,7 +42,9 @@ axiosInstance.interceptors.response.use(
     }
     if (response.status === HTTP_OK) {
       const resp = response.data as ServerResponse<unknown>;
+      // @ts-ignore
       if (resp && resp.code !== HTTP_OK && resp.message && response.config.showServerResponseError) {
+        // @ts-ignore
         warningMessage(resp.message);
       }
       return response.data;
@@ -105,7 +108,7 @@ const LocalhostService: ApiServiceAdapter = {
       method: "GET",
       baseURL: "https://yuuka.cdn.diyigemt.com/image/ba-all-data/data/",
       url: ExcelTableNameMap[type],
-    }) as unknown as Promise<ServerResponse<ActualBaseExcelTable[T]>>;
+    }) as unknown as Promise<ServerResponse<ExcelTable<NonNullable<ReturnType<ActualBaseExcelTable[T]["get"]>>>>>;
   },
   urlDownload(url: string, data: instanceObject) {
     window.location.href = `${BASE_PREFIX}/${url}?${formatJsonToUrlParams(data)}`;

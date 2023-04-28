@@ -7,13 +7,14 @@
 </template>
 
 <script setup lang="ts">
+import { Ref } from "vue";
 import { inspectFormData } from "@/views/Editor/tools";
 import { InternalPlaceStoryUnit } from "@/views/Editor/tools/types";
 
 const index = inject("index", ref(-1));
-const storyUnit = inject<InternalPlaceStoryUnit>("storyUnit") || { place: "", type: "place" };
+const storyUnit = inject<Ref<InternalPlaceStoryUnit>>("storyUnit")!;
 
-const place = ref(storyUnit.place);
+const place = ref(storyUnit.value.place);
 
 inspectFormData("place", [place], index);
 </script>

@@ -1,6 +1,6 @@
-import { BGNameExcelTableItem } from "ba-story-player/dist/types/excels";
+import { BGNameExcelTableItem, CharacterNameExcelTableItem } from "ba-story-player/dist/types/excels";
 
-export type ExcelTableType = "background";
+export type ExcelTableType = "background" | "character";
 
 export type ExcelTable<T> = {
   DataList: T[];
@@ -12,6 +12,7 @@ type BaseExcelTable = {
 
 export interface ActualBaseExcelTable extends BaseExcelTable {
   background: Map<number, BGNameExcelTableItem>;
+  character: Map<number, CharacterNameExcelTableItem>;
 }
 
 type IExcelTableNameMap = {
@@ -20,4 +21,5 @@ type IExcelTableNameMap = {
 
 export const ExcelTableNameMap: IExcelTableNameMap = {
   background: "ScenarioBGNameExcelTable.json",
+  character: "ScenarioCharacterNameExcelTable.json",
 };

@@ -1,5 +1,5 @@
 import { defineAsyncComponent, Ref } from "vue";
-import { EffectOnlyConfig, IStoryUnitComponentMap, IStoryUnitGenerator } from "@/views/Editor/tools/types";
+import { EffectOnlyConfig, IStoryUnitComponentMap, IStoryUnitGenerator, TextConfig } from "@/views/Editor/tools/types";
 
 export const StoryUnitComponentMap: IStoryUnitComponentMap = {
   title: {
@@ -17,11 +17,11 @@ export const StoryUnitComponentMap: IStoryUnitComponentMap = {
     description: "左上角那个",
   },
   text: {
-    component: defineAsyncComponent(() => import("../StoryItems/TitleUnit.vue")),
+    component: defineAsyncComponent(() => import("../StoryItems/TextUnit.vue")),
     type: "text",
     icon: "",
-    title: "",
-    description: "",
+    title: "文字层",
+    description: "谁在说话",
   },
   option: {
     component: defineAsyncComponent(() => import("../StoryItems/TitleUnit.vue")),
@@ -87,6 +87,13 @@ export const StoryRawUnitGeneratorMap: IStoryUnitGenerator = {
         subTitle: subTitle.value,
       };
     },
+    default() {
+      return {
+        type: "title",
+        title: "",
+        subTitle: "",
+      };
+    },
   },
   place: {
     raw: {
@@ -103,6 +110,12 @@ export const StoryRawUnitGeneratorMap: IStoryUnitGenerator = {
         place: place.value,
       };
     },
+    default() {
+      return {
+        type: "place",
+        place: "",
+      };
+    },
   },
   effectOnly: {
     raw: {
@@ -114,6 +127,40 @@ export const StoryRawUnitGeneratorMap: IStoryUnitGenerator = {
       return {
         type: "effectOnly",
         background: config.value.background,
+      };
+    },
+    default() {
+      return {
+        type: "effectOnly",
+        background: undefined,
+      };
+    },
+  },
+  text: {
+    raw: {
+      ScriptKr(config: Ref<TextConfig>) {
+        return "";
+      },
+      TextCn(config: Ref<TextConfig>) {
+        return "";
+      },
+    },
+    internal(config: Ref<TextConfig>) {
+      return {
+        type: "text",
+        characterName: undefined,
+        position: undefined,
+        face: undefined,
+        text: [],
+      };
+    },
+    default() {
+      return {
+        type: "text",
+        characterName: undefined,
+        position: undefined,
+        face: undefined,
+        text: [],
       };
     },
   },

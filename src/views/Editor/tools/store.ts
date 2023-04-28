@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { BGNameExcelTableItem } from "ba-story-player/dist/types/excels";
+import { BGNameExcelTableItem, CharacterNameExcelTableItem } from "ba-story-player/dist/types/excels";
 import { StoryStoreState, StoryRawUnit, InternalStoryUnit } from "@/views/Editor/tools/types";
 import { buildDefaultStoryRawUnit } from "@/views/Editor/tools/index";
 import { ActualBaseExcelTable, ExcelTableType } from "@/types";
@@ -16,7 +16,7 @@ const useStoryStore = defineStore({
       this.story.push(unit);
     },
     updateStoryUnit(unit: StoryRawUnit, index: number) {
-      this.story.splice(index, 1, unit);
+      return this.story.splice(index, 1, unit);
     },
     deleteStoryUnit(index: number) {
       this.story.splice(index, 1);
@@ -26,7 +26,7 @@ const useStoryStore = defineStore({
       this.internalStory.push(unit);
     },
     updateInternalStoryUnit(unit: InternalStoryUnit, index: number) {
-      this.internalStory.splice(index, 1, unit);
+      return this.internalStory.splice(index, 1, unit);
     },
     deleteInternalStoryUnit(index: number) {
       this.internalStory.splice(index, 1);
@@ -37,6 +37,14 @@ const useStoryStore = defineStore({
         this.insertStoryUnit(buildDefaultStoryRawUnit({ type: "title" }));
         this.insertInternalStoryUnit({ type: "title", title: "", subTitle: "" });
       }
+    },
+    clearCache() {
+      this.story = [];
+      this.internalStory = [];
+    },
+    updateInternalIndex(newIndex: number, oldIndex: number) {
+      const cache = this.internalStory.splice(oldIndex, 1);
+      this.internalStory.splice(newIndex, 0, ...cache);
     },
   },
   persist: {
@@ -63,6 +71,9 @@ const ExcelTableLoader: IExcelTableLoader = {
   background: {
     load: () => StoryApi.fetchBackgroundNameExcelTable(),
   },
+  character: {
+    load: () => StoryApi.fetchCharacterNameExcelTable(),
+  },
 };
 
 // @ts-ignore
@@ -71,6 +82,7 @@ export const ExcelTable: {
 } = new Proxy(
   {
     background: new Map<number, BGNameExcelTableItem>(),
+    character: new Map<number, CharacterNameExcelTableItem>(),
   },
   {
     get(target, p) {

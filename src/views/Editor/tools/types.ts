@@ -1,4 +1,4 @@
-import { StoryType, StoryRawUnit as PlayerStoryUnit } from "ba-story-player/dist/types/common";
+import { StoryType, StoryRawUnit as PlayerStoryUnit, Text } from "ba-story-player/dist/types/common";
 import { Ref, defineAsyncComponent } from "vue";
 
 export type StoryUnitType = StoryType;
@@ -17,7 +17,11 @@ export type StoryStoreState = {
  *
  * 指定InternalStoryUnit自己的结构
  */
-export type InternalStoryUnit = InternalTitleStoryUnit | InternalPlaceStoryUnit | InternalEffectStoryUnit;
+export type InternalStoryUnit =
+  | InternalTitleStoryUnit
+  | InternalPlaceStoryUnit
+  | InternalEffectStoryUnit
+  | InternalTextStoryUnit;
 
 export type InternalTitleStoryUnit = BaseInternalStoryUnit<
   "title",
@@ -34,12 +38,12 @@ export type InternalPlaceStoryUnit = BaseInternalStoryUnit<
   }
 >;
 
-export type InternalEffectStoryUnit = BaseInternalStoryUnit<
-  "effectOnly",
-  {
-    background: number;
-  }
->;
+export type InternalEffectStoryUnit = BaseInternalStoryUnit<"effectOnly", EffectOnlyConfig>;
+
+/**
+ * @characterName 对应CharacterNameExcelTableItem的CharacterName
+ */
+export type InternalTextStoryUnit = BaseInternalStoryUnit<"text", TextConfig>;
 
 export type IStoryUnitComponentMap = {
   [key in StoryUnitType]: {
@@ -76,10 +80,18 @@ export interface ActualGeneralFunctionIncludeList extends BaseGeneralFunctionInc
   title: "ScriptKr" | "TextCn";
   place: "ScriptKr" | "TextCn";
   effectOnly: "BGName";
+  text: "ScriptKr" | "TextCn";
 }
 
 export type EffectOnlyConfig = {
   background: number;
+};
+
+export type TextConfig = {
+  characterName?: number; // 角色在CharacterNameExcelTable中的id
+  position?: number; // 角色在的位置 1/2/3/4/5
+  face?: string; // spine中的表情差分编号
+  text: Text[];
 };
 
 /**
@@ -91,6 +103,7 @@ interface ActualGeneralFunction extends BaseGeneralFunction {
   title: (title: Ref<string>, subTitle: Ref<string | undefined>) => InternalTitleStoryUnit;
   place: (place: Ref<string>) => InternalPlaceStoryUnit;
   effectOnly: (config: Ref<EffectOnlyConfig>) => InternalEffectStoryUnit;
+  text: (config: Ref<TextConfig>) => InternalTextStoryUnit;
 }
 
 type BuildFunctionFromType<type extends StoryUnitType, key extends keyof StoryRawUnitOmitType> = (
@@ -103,5 +116,10 @@ export type IStoryUnitGenerator = {
       [key in ActualGeneralFunctionIncludeList[type]]: BuildFunctionFromType<type, key>;
     };
     internal: ActualGeneralFunction[type];
+    default: () => { type: type } & {
+      [key in keyof Omit<Required<ReturnType<ActualGeneralFunction[type]>>, "type">]:
+        | Omit<Required<ReturnType<ActualGeneralFunction[type]>>, "type">[key]
+        | undefined;
+    };
   };
 };

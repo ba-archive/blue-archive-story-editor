@@ -10,14 +10,15 @@
 </template>
 
 <script setup lang="ts">
+import { Ref } from "vue";
 import { inspectFormData } from "@/views/Editor/tools";
 import { InternalTitleStoryUnit } from "@/views/Editor/tools/types";
 
 const index = inject("index", ref(-1));
-const storyUnit = inject<InternalTitleStoryUnit>("storyUnit") || { title: "", subTitle: "", type: "title" };
+const storyUnit = inject<Ref<InternalTitleStoryUnit>>("storyUnit")!;
 
-const title = ref(storyUnit.title);
-const subTitle = ref(storyUnit.subTitle);
+const title = ref(storyUnit.value.title);
+const subTitle = ref(storyUnit.value.subTitle);
 
 inspectFormData("title", [title, subTitle], index);
 </script>

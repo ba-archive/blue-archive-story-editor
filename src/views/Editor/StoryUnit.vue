@@ -1,7 +1,10 @@
 <template>
   <div class="story-unit-container flex flex-row">
     <div class="w-30px flex flex-col justify-center">
-      <div>{{ index }}</div>
+      <el-text>
+        <el-icon><Sort class="drag-handle cursor-move" /></el-icon>
+        {{ index }}
+      </el-text>
     </div>
     <div class="component flex-1">
       <Component :is="StoryUnit.component" :index="index" />
@@ -13,8 +16,9 @@
 </template>
 
 <script setup lang="ts">
+import { Sort } from "@element-plus/icons-vue";
 import { InternalStoryUnit, StoryUnitType } from "@/views/Editor/tools/types";
-import { StoryUnitComponentMap } from "@/views/Editor/tools/storyUnitMap";
+import { StoryRawUnitGeneratorMap, StoryUnitComponentMap } from "@/views/Editor/tools/storyUnitMap";
 import { deleteStoryUnit } from "@/views/Editor/tools";
 import useStoryStore from "@/views/Editor/tools/store";
 
@@ -25,19 +29,22 @@ const props = withDefaults(defineProps<IProp>(), {
 });
 
 const index = ref(props.index);
-const storyUnit = ref<InternalStoryUnit>(storyStore.internalStory[index.value]);
 watch(
   () => props.index,
   (cur) => {
     index.value = cur;
-    storyUnit.value = storyStore.internalStory[cur];
   },
 );
 
 provide("index", index);
-provide("storyUnit", storyUnit.value);
 
 const StoryUnit = computed(() => StoryUnitComponentMap[props.type]);
+
+const storyUnit = computed(
+  () => storyStore.internalStory[index.value] || StoryRawUnitGeneratorMap[props.type].default(),
+);
+
+provide("storyUnit", storyUnit);
 
 function deleteSelf() {
   deleteStoryUnit(props.index);
