@@ -21,15 +21,15 @@
     <el-col :span="12" class="flex-1 h-full">
       <CardContainer title="剧情脚本" class="flex-1 h-full">
         <div class="h-full flex flex-col">
-          <el-row class="mb-8px">
+          <el-row class="mb-16px">
             <el-button type="primary" class="w-full" @click="createStoryUnit">新增</el-button>
           </el-row>
           <el-row class="flex-1">
-            <el-scrollbar>
+            <el-scrollbar class="w-full">
               <StoryUnit
                 v-for="(e, index) in story"
                 :key="index"
-                class="mb-8px"
+                class="mb-16px"
                 :type="e.type"
                 :index="Number(index)"
               />
@@ -52,6 +52,7 @@ import StoryUnit from "@/views/Editor/StoryUnit.vue";
 import CreateStoryUnitDialog from "@/views/Editor/CreateStoryUnitDialog.vue";
 import useStoryStore from "@/views/Editor/tools/store";
 import { buildDefaultStoryRawUnit } from "@/views/Editor/tools";
+import StoryApi from "@/views/Editor/tools/api";
 
 const StoryPlayerContainerEl = ref<HTMLElement>();
 const storyStore = useStoryStore();

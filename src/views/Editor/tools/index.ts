@@ -1,3 +1,4 @@
+import { Ref } from "vue";
 import useStoryStore from "@/views/Editor/tools/store";
 import { InternalStoryUnit, StoryRawUnit, StoryUnitType } from "@/views/Editor/tools/types";
 import { StoryRawUnitGeneratorMap } from "@/views/Editor/tools/storyUnitMap";
@@ -27,19 +28,43 @@ export function deleteStoryUnit(index: number) {
 }
 
 export function inspectFormData<K extends StoryUnitType>(
-  kk: typeof StoryRawUnitGeneratorMap[K],
-  deps: Parameters<typeof watch>[0],
-  storyBuilder: () => PromiseLike<StoryRawUnit>,
-  internalStoryBuilder: () => PromiseLike<InternalStoryUnit>,
-  index: number,
+  type: K,
+  deps: Parameters<typeof StoryRawUnitGeneratorMap[K]["internal"]>,
+  index: Ref<number>,
+  customStoryBuilder?: () => PromiseLike<StoryRawUnit>,
+  customInternalStoryBuilder?: () => PromiseLike<InternalStoryUnit>,
 ) {
   const store = useStoryStore();
+  const defaultStoryBuilder = StoryRawUnitGeneratorMap[type].raw;
+  const defaultInternalStoryBuilder = StoryRawUnitGeneratorMap[type].internal;
   watch(deps, () => {
-    storyBuilder().then((data) => {
-      store.updateStoryUnit(data, index);
-    });
-    internalStoryBuilder().then((data) => {
-      store.updateInternalStoryUnit(data, index);
-    });
+    if (customStoryBuilder) {
+      customStoryBuilder().then((data) => {
+        store.updateStoryUnit(data, index.value);
+      });
+    } else {
+      // @ts-ignore
+      const override: Partial<Omit<StoryRawUnit, "type">> & Required<Pick<StoryRawUnit, "type">> = {};
+      Object.keys(defaultStoryBuilder).forEach((key) => {
+        const fn = Reflect.get(defaultStoryBuilder, key);
+        Reflect.set(override, key, fn.apply(defaultStoryBuilder, deps));
+      });
+      store.updateStoryUnit(
+        buildDefaultStoryRawUnit({
+          ...override,
+          type,
+        }),
+        index.value,
+      );
+    }
+    if (customInternalStoryBuilder) {
+      customInternalStoryBuilder().then((data) => {
+        store.updateInternalStoryUnit(data, index.value);
+      });
+    } else {
+      // @ts-ignore
+      const data = defaultInternalStoryBuilder(...deps) as InternalStoryUnit;
+      store.updateInternalStoryUnit(data, index.value);
+    }
   });
 }

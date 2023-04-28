@@ -1,6 +1,8 @@
 <template>
   <div class="story-unit-container flex flex-row">
-    <div class="index">{{ index }}</div>
+    <div class="w-30px flex flex-col justify-center">
+      <div>{{ index }}</div>
+    </div>
     <div class="component flex-1">
       <Component :is="StoryUnit.component" :index="index" />
     </div>
@@ -11,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import { StoryUnitType } from "@/views/Editor/tools/types";
+import { InternalStoryUnit, StoryUnitType } from "@/views/Editor/tools/types";
 import { StoryUnitComponentMap } from "@/views/Editor/tools/storyUnitMap";
 import { deleteStoryUnit } from "@/views/Editor/tools";
 import useStoryStore from "@/views/Editor/tools/store";
@@ -22,8 +24,18 @@ const props = withDefaults(defineProps<IProp>(), {
   type: "text",
 });
 
-provide("index", props.index);
-provide("storyUnit", storyStore.internalStory[props.index]);
+const index = ref(props.index);
+const storyUnit = ref<InternalStoryUnit>(storyStore.internalStory[index.value]);
+watch(
+  () => props.index,
+  (cur) => {
+    index.value = cur;
+    storyUnit.value = storyStore.internalStory[cur];
+  },
+);
+
+provide("index", index);
+provide("storyUnit", storyUnit.value);
 
 const StoryUnit = computed(() => StoryUnitComponentMap[props.type]);
 
@@ -41,9 +53,6 @@ type IProp = {
 .story-unit-container {
   .index {
     width: 30px;
-  }
-  .action {
-    width: 100px;
   }
 }
 </style>

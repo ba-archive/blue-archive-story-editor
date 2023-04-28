@@ -1,5 +1,6 @@
 import { AxiosError, AxiosPromise, AxiosRequestConfig, AxiosResponse } from "axios";
 import { instanceObject } from "@/utils/format";
+import { ActualBaseExcelTable, ExcelTable, ExcelTableType } from "@/types";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface IRequestConfig<D = any> extends AxiosRequestConfig<D> {
@@ -10,7 +11,6 @@ export interface IRequestConfig<D = any> extends AxiosRequestConfig<D> {
   showServerResponseError?: boolean;
   // 返回值是否是文件流
   isBlob?: boolean;
-  version?: "v1" | "v2";
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -22,15 +22,21 @@ export interface IResponseError<T = any, D = any> extends AxiosError<T, D> {
 export interface IResponse<T = any, D = any> extends AxiosResponse<T, D> {
   config: IRequestConfig<D>;
 }
-export interface ServerResponse<T> {
-  code: number;
-  message: string;
-  data: T;
-}
+// export type ServerResponse<T> = {
+//   code: number;
+//   message: string;
+//   data: T;
+// };
+
+export type ServerResponse<T> = T;
+
 export interface ApiServiceAdapter {
   upload(url: string, file: FormData | File): Promise<ServerResponse<string>>;
   download(id: string): AxiosPromise;
   raw<T>(config: IRequestConfig): Promise<ServerResponse<T>>;
+  excel<T extends ExcelTableType>(
+    type: T,
+  ): Promise<ServerResponse<ExcelTable<NonNullable<ReturnType<ActualBaseExcelTable[T]["get"]>>>>>;
   urlDownload(url: string, data: instanceObject): void;
 }
 

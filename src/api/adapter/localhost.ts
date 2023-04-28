@@ -5,6 +5,7 @@ import { HTTP_OK } from "@/constant";
 import { errorMessage, infoMessage, warningMessage } from "@/utils/message";
 import showCodeMessage from "@/api/code";
 import { formatJsonToUrlParams, instanceObject } from "@/utils/format";
+import { ActualBaseExcelTable, ExcelTableNameMap, ExcelTableType } from "@/types";
 
 const BASE_PREFIX = import.meta.env.VITE_API_BASEURL;
 
@@ -17,17 +18,12 @@ const axiosInstance: AxiosInstance = axios.create({
   // 请求头
   headers: {
     "Content-Type": "application/json",
-    "Access-Control-Allow-Origin": "*",
   },
 });
 
 // 请求拦截器
 axiosInstance.interceptors.request.use(
   (config: IRequestConfig) => {
-    if (!config.version) {
-      config.version = "v1";
-      config.baseURL = `${config.baseURL}/api/${config.version}/`;
-    }
     config.showServerResponseError = config.showServerResponseError || true;
     return config;
   },
@@ -103,6 +99,13 @@ const LocalhostService: ApiServiceAdapter = {
   },
   raw<T>(config: IRequestConfig): Promise<ServerResponse<T>> {
     return axiosInstance(config) as unknown as Promise<ServerResponse<T>>;
+  },
+  excel<T extends ExcelTableType>(type: T) {
+    return axiosInstance({
+      method: "GET",
+      baseURL: "https://yuuka.cdn.diyigemt.com/image/ba-all-data/data/",
+      url: ExcelTableNameMap[type],
+    }) as unknown as Promise<ServerResponse<ActualBaseExcelTable[T]>>;
   },
   urlDownload(url: string, data: instanceObject) {
     window.location.href = `${BASE_PREFIX}/${url}?${formatJsonToUrlParams(data)}`;
