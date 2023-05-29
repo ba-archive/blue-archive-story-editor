@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import { StoryType } from "ba-story-player/dist/types/common";
+import { StoryType } from "ba-story-player/dist/lib/types/common";
 import { StoryUnitComponentMap } from "./tools/storyUnitMap";
 
 const emit = defineEmits<{

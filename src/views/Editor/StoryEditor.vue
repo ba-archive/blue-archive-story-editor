@@ -4,7 +4,7 @@
       <CardContainer title="实时预览" class="flex-1">
         <div ref="StoryPlayerContainerEl" class="h-full w-full">
           <story-player
-            :story="story"
+            :story="storyItem"
             :width="playerContainerWidth - 24"
             :height="playerContainerHeight - 24"
             :change-index="targetIndex"
@@ -50,7 +50,7 @@
 
 <script setup lang="ts">
 import StoryPlayer from "ba-story-player";
-import { StoryType } from "ba-story-player/dist/types/common";
+import { StoryType, TranslatedStoryUnit } from "ba-story-player/dist/lib/types/common";
 import "ba-story-player/dist/style.css";
 import { VueDraggable } from "vue-draggable-plus";
 import { SortableEvent } from "sortablejs";
@@ -63,6 +63,11 @@ const StoryPlayerContainerEl = ref<HTMLElement>();
 const storyStore = useStoryStore();
 const { width: playerContainerWidth, height: playerContainerHeight } = useElementSize(StoryPlayerContainerEl);
 const story = computed(() => storyStore.story);
+const storyItem = computed<TranslatedStoryUnit>(() => ({
+  GroupId: 0,
+  translator: "",
+  content: story.value,
+}));
 const targetIndex = ref(0);
 const createDialogVisible = ref(false);
 

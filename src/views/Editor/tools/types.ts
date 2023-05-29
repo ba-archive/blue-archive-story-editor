@@ -1,4 +1,4 @@
-import { StoryType, StoryRawUnit as PlayerStoryUnit, Text } from "ba-story-player/dist/types/common";
+import { StoryType, StoryRawUnit as PlayerStoryUnit, Text } from "ba-story-player/dist/lib/types/common";
 import { Ref, defineAsyncComponent } from "vue";
 
 export type StoryUnitType = StoryType;

@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { BGNameExcelTableItem, CharacterNameExcelTableItem } from "ba-story-player/dist/types/excels";
+import { BGNameExcelTableItem, CharacterNameExcelTableItem } from "ba-story-player/dist/lib/types/excels";
 import { StoryStoreState, StoryRawUnit, InternalStoryUnit } from "@/views/Editor/tools/types";
 import { buildDefaultStoryRawUnit } from "@/views/Editor/tools/index";
 import { ActualBaseExcelTable, ExcelTableType } from "@/types";

@@ -23,8 +23,7 @@
 
 <script setup lang="ts">
 import { Ref } from "vue";
-import { getResourcesUrl } from "ba-story-player/dist/utils";
-import { CharacterNameExcelTableItem } from "ba-story-player/dist/types/excels";
+import { CharacterNameExcelTableItem } from "ba-story-player/dist/lib/types/excels";
 import { inspectFormData } from "@/views/Editor/tools";
 import { InternalTextStoryUnit } from "@/views/Editor/tools/types";
 import { ExcelTable } from "@/views/Editor/tools/store";

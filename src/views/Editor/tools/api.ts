@@ -1,4 +1,4 @@
-import { BGNameExcelTableItem, CharacterNameExcelTableItem } from "ba-story-player/dist/types/excels";
+import { BGNameExcelTableItem, CharacterNameExcelTableItem } from "ba-story-player/dist/lib/types/excels";
 import service from "@/api/http";
 
 const StoryApi = {

@@ -1,11 +1,6 @@
 <template>
   <div class="banner-container cursor-pointer dot-bg" @click="goHome">
     <div class="font-bold text-left antialiased font-sans banner-text">Arona</div>
-    <div>
-      <el-select v-model="select" placeholder="全部" clearable @change="updateActiveGroup">
-        <el-option v-for="(e, index) in groups" :key="index" :value="e.id" :label="e.name" />
-      </el-select>
-    </div>
   </div>
 </template>
 
@@ -18,10 +13,6 @@ const select = ref<number>();
 function goHome() {
   router.push("/config");
 }
-function updateActiveGroup(group: number) {
-  baseStore.setActiveGroupId(group);
-}
-const groups = computed(() => baseStore.groups());
 </script>
 
 <style lang="scss" scoped>

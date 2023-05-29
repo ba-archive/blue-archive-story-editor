@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import { BGNameExcelTableItem } from "ba-story-player/dist/types/excels";
+import { BGNameExcelTableItem } from "ba-story-player/dist/lib/types/excels";
 import { Ref } from "vue";
 import { ExcelTable } from "@/views/Editor/tools/store";
 import { EffectOnlyConfig } from "@/views/Editor/tools/types";
