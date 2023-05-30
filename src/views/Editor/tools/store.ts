@@ -41,6 +41,7 @@ const useStoryStore = defineStore({
     clearCache() {
       this.story = [];
       this.internalStory = [];
+      this.normalizeStoryUnit();
     },
     updateInternalIndex(newIndex: number, oldIndex: number) {
       const cache = this.internalStory.splice(oldIndex, 1);

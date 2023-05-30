@@ -139,19 +139,21 @@ export const StoryRawUnitGeneratorMap: IStoryUnitGenerator = {
   text: {
     raw: {
       ScriptKr(config: Ref<TextConfig>) {
-        return "";
+        const { position, characterName, face, text } = config.value;
+        return `${position};${characterName};${face};${text.map((it) => it.content).join("")}`;
       },
       TextCn(config: Ref<TextConfig>) {
-        return "";
+        return config.value.text.map((it) => it.content).join("");
       },
     },
     internal(config: Ref<TextConfig>) {
+      const { position, characterName, face, text } = config.value;
       return {
         type: "text",
-        characterName: undefined,
-        position: undefined,
-        face: undefined,
-        text: [],
+        characterName,
+        position,
+        face,
+        text,
       };
     },
     default() {

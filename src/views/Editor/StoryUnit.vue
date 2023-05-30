@@ -17,7 +17,7 @@
 
 <script setup lang="ts">
 import { Sort } from "@element-plus/icons-vue";
-import { InternalStoryUnit, StoryUnitType } from "@/views/Editor/tools/types";
+import { StoryUnitType } from "@/views/Editor/tools/types";
 import { StoryRawUnitGeneratorMap, StoryUnitComponentMap } from "@/views/Editor/tools/storyUnitMap";
 import { deleteStoryUnit } from "@/views/Editor/tools";
 import useStoryStore from "@/views/Editor/tools/store";
@@ -28,13 +28,7 @@ const props = withDefaults(defineProps<IProp>(), {
   type: "text",
 });
 
-const index = ref(props.index);
-watch(
-  () => props.index,
-  (cur) => {
-    index.value = cur;
-  },
-);
+const index = computed(() => props.index);
 
 provide("index", index);
 

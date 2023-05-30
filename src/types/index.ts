@@ -23,3 +23,8 @@ export const ExcelTableNameMap: IExcelTableNameMap = {
   background: "ScenarioBGNameExcelTable.json",
   character: "ScenarioCharacterNameExcelTable.json",
 };
+
+export type OptionItem = {
+  label: string;
+  value: string | number;
+};

@@ -17,7 +17,6 @@
       <CardContainer title="资源列表" class="flex-1">
         <h1>这是资源列表</h1>
         <el-button type="danger" @click="clear">清空缓存</el-button>
-        <el-button type="primary" @click="flash">刷新</el-button>
       </CardContainer>
     </el-col>
     <el-col :span="12" class="flex-1 h-full">
@@ -85,11 +84,6 @@ function update(event: SortableEvent) {
 
 function clear() {
   storyStore.clearCache();
-}
-
-function flash() {
-  const tmp = window.location.href;
-  window.location.href = tmp;
 }
 </script>
 

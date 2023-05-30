@@ -21,6 +21,7 @@ declare module '@vue/runtime-core' {
     ElRow: typeof import('element-plus/es')['ElRow']
     ElScrollbar: typeof import('element-plus/es')['ElScrollbar']
     ElSelect: typeof import('element-plus/es')['ElSelect']
+    ElSelectV2: typeof import('element-plus/es')['ElSelectV2']
     ElText: typeof import('element-plus/es')['ElText']
     EnProcess: typeof import('./components/EnProcess.md')['default']
     MainAsideMenu: typeof import('./components/MainAsideMenu.vue')['default']

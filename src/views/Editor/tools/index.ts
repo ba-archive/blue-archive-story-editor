@@ -38,7 +38,7 @@ export function inspectFormData<K extends StoryUnitType>(
   const store = useStoryStore();
   const defaultStoryBuilder = StoryRawUnitGeneratorMap[type].raw;
   const defaultInternalStoryBuilder = StoryRawUnitGeneratorMap[type].internal;
-  watch(
+  debouncedWatch(
     deps,
     () => {
       if (customStoryBuilder) {
@@ -70,7 +70,7 @@ export function inspectFormData<K extends StoryUnitType>(
         store.updateInternalStoryUnit(data, index.value);
       }
     },
-    { deep: true },
+    { deep: true, debounce: 1000, maxWait: 3000 },
   );
 }
 
