@@ -1,3 +1,5 @@
+仓库已经迁移到 [monorepo](https://github.com/ba-archive/blue-archive/)，本仓库不会继续更新。
+
 # 可视化剧情编辑器
 
 ## 紧急
